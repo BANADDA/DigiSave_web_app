@@ -49,8 +49,8 @@ class _HelloContainerState extends State<HelloContainer> {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        height: 80,
-        width: 200,
+        height: 70,
+        width: 180,
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: isHovering
@@ -62,11 +62,11 @@ class _HelloContainerState extends State<HelloContainer> {
           children: [
             Icon(
               widget.icon,
-              size: 45,
+              size: 35,
               color: iconColor, // Set the icon color based on the title
             ),
             SizedBox(
-              width: 8,
+              width: 3,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,13 +77,13 @@ class _HelloContainerState extends State<HelloContainer> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: 16),
+                      fontSize: 14),
                 ),
                 Text(widget.text!,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Colors.black,
-                        fontSize: 14)),
+                        fontSize: 12)),
               ],
             )
           ],

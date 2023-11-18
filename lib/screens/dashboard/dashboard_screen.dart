@@ -8,9 +8,33 @@ import 'components/header.dart';
 import 'components/recent_files.dart';
 import 'components/storage_details.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
+  final Map<String, int> userStatistics;
+
+  const DashboardScreen({Key? key, required this.userStatistics})
+      : super(key: key);
+
+  @override
+  _DashboardScreenState createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  late Map<String, int> _userStatistics;
+
+  @override
+  void initState() {
+    super.initState();
+    // _userStatistics = widget.userStatistics;
+    // print('staticas: $_userStatistics');
+  }
+
   @override
   Widget build(BuildContext context) {
+    _userStatistics = widget.userStatistics;
+    if (_userStatistics.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return SafeArea(
       child: SingleChildScrollView(
         primary: false,
@@ -31,7 +55,10 @@ class DashboardScreen extends StatelessWidget {
                       RecentFiles(),
                       if (Responsive.isMobile(context))
                         SizedBox(height: defaultPadding),
-                      if (Responsive.isMobile(context)) StorageDetails(),
+                      if (Responsive.isMobile(context))
+                        StorageDetails(
+                          userStatistics: _userStatistics,
+                        ),
                     ],
                   ),
                 ),
@@ -41,7 +68,9 @@ class DashboardScreen extends StatelessWidget {
                 if (!Responsive.isMobile(context))
                   Expanded(
                     flex: 2,
-                    child: StorageDetails(),
+                    child: StorageDetails(
+                      userStatistics: _userStatistics,
+                    ),
                   ),
               ],
             )

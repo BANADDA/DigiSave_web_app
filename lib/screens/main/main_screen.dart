@@ -1,4 +1,5 @@
 import 'package:admin/controllers/MenuAppController.dart';
+import 'package:admin/models/data/user_statistics.dart';
 import 'package:admin/responsive.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,30 @@ import 'package:provider/provider.dart';
 
 import 'components/side_menu.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  Map<String, int> _userStatistics = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserStatistics();
+  }
+
+  Future<void> fetchUserStatistics() async {
+    Map<String, int>? statistics = await getUserStatistics();
+    if (statistics != null) {
+      setState(() {
+        _userStatistics = statistics;
+        print('Stats: $_userStatistics');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +40,7 @@ class MainScreen extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // We want this side menu only for large screen
+            // We want this side menu only for large screens
             if (Responsive.isDesktop(context))
               Expanded(
                 // default flex = 1
@@ -26,7 +50,9 @@ class MainScreen extends StatelessWidget {
             Expanded(
               // It takes 5/6 part of the screen
               flex: 5,
-              child: DashboardScreen(),
+              child: DashboardScreen(
+                userStatistics: _userStatistics,
+              ),
             ),
           ],
         ),

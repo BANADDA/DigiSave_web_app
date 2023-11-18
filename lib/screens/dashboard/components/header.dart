@@ -3,6 +3,7 @@ import 'package:admin/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../constants.dart';
 
@@ -50,24 +51,45 @@ class Header extends StatelessWidget {
   }
 }
 
-class ProfileCard extends StatelessWidget {
-  const ProfileCard({
-    Key? key,
-  }) : super(key: key);
+class ProfileCard extends StatefulWidget {
+  const ProfileCard({Key? key}) : super(key: key);
+
+  @override
+  _ProfileCardState createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  String? fullName;
+
+  @override
+  void initState() {
+    loadUserDetails();
+    super.initState();
+  }
+
+  Future<void> loadUserDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = prefs.getString('token');
+    fullName = prefs.getString('fullName');
+    int? userId = prefs.getInt('userId');
+
+    if (token != null && fullName != null && userId != null) {
+      // Use the retrieved user details as needed in your app
+      print('Token: $token');
+      print('Full Name: $fullName');
+      print('User ID: $userId');
+      setState(() {}); // Update the UI with retrieved details
+    } else {
+      // Handle if some or all of the values are not available
+      print('User details not found in SharedPreferences');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: defaultPadding),
-      padding: EdgeInsets.symmetric(
-        horizontal: defaultPadding,
-        vertical: defaultPadding / 2,
-      ),
-      decoration: BoxDecoration(
-        color: secondaryColor,
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-        border: Border.all(color: Colors.white10),
-      ),
+      //... Your existing code ...
       child: Row(
         children: [
           Image.asset(
@@ -83,16 +105,18 @@ class ProfileCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Admin",
+                    "Logged in as:",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.white),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
                   ),
                   SizedBox(
                     height: 5,
                   ),
-                  Text("Peter Ocheng", style: TextStyle(color: Colors.white)),
+                  Text("$fullName",
+                      style: TextStyle(color: Colors.white, fontSize: 10)),
                 ],
               ),
             ),

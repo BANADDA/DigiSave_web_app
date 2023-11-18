@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-
 import '../../../constants.dart';
 import 'chart.dart';
 import 'storage_info_card.dart';
 
-class StorageDetails extends StatelessWidget {
-  const StorageDetails({
-    Key? key,
-  }) : super(key: key);
+class StorageDetails extends StatefulWidget {
+  final Map<String, int> userStatistics;
+
+  const StorageDetails({Key? key, required this.userStatistics})
+      : super(key: key);
+
+  @override
+  _StorageDetailsState createState() => _StorageDetailsState();
+}
+
+class _StorageDetailsState extends State<StorageDetails> {
+  late Map<String, int> _userStatistics = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _userStatistics = widget.userStatistics;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +47,17 @@ class StorageDetails extends StatelessWidget {
               StorageInfoCard(
                 svgSrc: "assets/images/male.png",
                 title: "Male",
-                amountOfFiles: "1328",
+                amountOfFiles: _userStatistics['maleUsers'].toString(),
               ),
               StorageInfoCard(
                 svgSrc: "assets/images/female.png",
                 title: "Female",
-                amountOfFiles: "1328",
+                amountOfFiles: _userStatistics['femaleUsers'].toString(),
               ),
               StorageInfoCard(
                 svgSrc: "assets/images/others.png",
                 title: "Others",
-                amountOfFiles: "1328",
+                amountOfFiles: _userStatistics['otherGenderUsers'].toString(),
               ),
             ],
           ),
@@ -70,17 +83,16 @@ class StorageDetails extends StatelessWidget {
                       elevation: 0,
                       color: Color.fromARGB(255, 99, 98, 98),
                       child: SizedBox(
-                        width: 150,
-                        height: 100,
+                        width: 120,
+                        height: 80,
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(
                             children: [
                               Icon(
                                 Icons.group_add_rounded,
-                                size: 25,
-                                color: Colors
-                                    .blueAccent, // Set the icon color based on the title
+                                size: 20,
+                                color: Colors.blueAccent,
                               ),
                               SizedBox(
                                 width: 8,
@@ -94,16 +106,19 @@ class StorageDetails extends StatelessWidget {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
-                                        fontSize: 14),
+                                        fontSize: 12),
                                   ),
                                   SizedBox(
-                                    height: 15,
+                                    height: 8,
                                   ),
-                                  Text('2000',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey,
-                                          fontSize: 12)),
+                                  Text(
+                                    _userStatistics['numberOfYouths']
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey,
+                                        fontSize: 14),
+                                  ),
                                 ],
                               )
                             ],
@@ -113,22 +128,22 @@ class StorageDetails extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                      width:
-                          16), // Adjust the width to control the space between the cards
+                    width: 16,
+                  ),
                   Expanded(
                     child: Card(
                       elevation: 0,
                       color: Color.fromARGB(255, 99, 98, 98),
                       child: SizedBox(
-                        width: 150,
-                        height: 100,
+                        width: 120,
+                        height: 80,
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Row(
                             children: [
                               Icon(
                                 Icons.wheelchair_pickup_sharp,
-                                size: 25,
+                                size: 20,
                                 color: Colors.amber,
                               ),
                               SizedBox(
@@ -143,21 +158,19 @@ class StorageDetails extends StatelessWidget {
                                     style: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
-                                        fontSize: 14),
+                                        fontSize: 12),
                                   ),
                                   SizedBox(
-                                    height: 15,
+                                    height: 8,
                                   ),
                                   Text(
-                                    '300',
+                                    _userStatistics['pwdYesUsers'].toString(),
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w400,
                                         color: Colors.grey,
                                         fontSize: 14),
-                                    maxLines:
-                                        1, // Set the maximum number of lines
-                                    overflow: TextOverflow
-                                        .ellipsis, // Add ellipsis for overflow
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               )

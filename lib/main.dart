@@ -42,6 +42,7 @@ class AppController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    authProvider.checkLoggedIn();
 
     return authProvider.isAuthenticated ? MainScreen() : LoginScreen();
   }
