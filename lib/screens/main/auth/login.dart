@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: ExactAssetImage('local_group.jpg'),
+              image: ExactAssetImage('images/local_group.jpg'),
               fit: BoxFit.cover,
             ),
           ),
