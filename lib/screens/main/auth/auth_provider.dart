@@ -22,65 +22,92 @@ class AuthProvider with ChangeNotifier {
   // }
 
   Future<void> login(String phoneNumber, String pinCode) async {
-    print('Here');
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (phoneNumber == '+256704959275' && pinCode == 'admin123') {
+      // Hardcoded values for phone number and pin code to check
+      _isAuthenticated = true;
 
-    // if (connectivityResult == ConnectivityResult.none) {
-    //   showNoInternetSnackBar(context); // Show the SnackBar
-    //   return;
-    // }
+      // Update SharedPreferences for logged-in status
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String fullName = 'Your Full Name'; // Replace with the actual full name
+      String token = 'Your Token'; // Replace with the actual token
+      int userId = 1; // Replace with the actual user ID
 
-    // Perform the login process if internet is available
-    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code/');
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({'phone': phoneNumber, 'unique_code': pinCode});
-    final Map<String, String> data = {
-      'phone': phoneNumber,
-      'unique_code': pinCode,
-    };
-    print('JSON: :$body');
-    print('Here');
+      prefs.setString('token', token);
+      prefs.setString('fullName', fullName);
+      prefs.setInt('userId', userId);
+      prefs.setBool('_isAuthenticated', true);
 
-    final response = await http.post(apiUrl, body: data);
+      // Execute tasks if needed
+      await syncUserDataWithApi();
+      await getUserFromPrefs();
 
-    if (response.statusCode == 200) {
-      // Parse the response data
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      print('Response: $responseData');
-      Map<String, dynamic> userData = responseData['user'];
-
-      String token = responseData['Token'];
-      String code = userData['unique_code'];
-      int userId = userData['id'];
-      print('First Name: ${userData['fname']}');
-      print('Last Name: ${userData['lname']}');
-      print('User token: $token');
-
-      // Assuming your API response has a key 'isAdmin' indicating admin status
-      bool isAdmin = responseData['is_admin'] ?? false;
-
-      if (isAdmin) {
-        // Get admin
-        _isAuthenticated = true;
-        String fullName = '${userData['fname']} ${userData['lname']}';
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', token);
-        prefs.setString('fullName', fullName);
-        prefs.setInt('userId', userData['id']);
-        prefs.setBool('_isAuthenticated', true);
-        // Execute tasks
-        await syncUserDataWithApi();
-        await getUserFromPrefs();
-      } else {
-        print('You are not an admin');
-      }
       notifyListeners();
     } else {
-      // Handle errors or display appropriate messages
-      print('Failed to log in. Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Invalid credentials provided');
+      // Handle invalid login attempt here
     }
   }
+
+  // Future<void> login(String phoneNumber, String pinCode) async {
+  //   print('Here');
+  //   var connectivityResult = await (Connectivity().checkConnectivity());
+
+  //   // if (connectivityResult == ConnectivityResult.none) {
+  //   //   showNoInternetSnackBar(context); // Show the SnackBar
+  //   //   return;
+  //   // }
+
+  //   // Perform the login process if internet is available
+  //   final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code/');
+  //   final headers = {'Content-Type': 'application/json'};
+  //   final body = json.encode({'phone': phoneNumber, 'unique_code': pinCode});
+  //   final Map<String, String> data = {
+  //     'phone': phoneNumber,
+  //     'unique_code': pinCode,
+  //   };
+  //   print('JSON: :$body');
+  //   print('Here');
+
+  //   final response = await http.post(apiUrl, body: data);
+
+  //   if (response.statusCode == 200) {
+  //     // Parse the response data
+  //     final Map<String, dynamic> responseData = json.decode(response.body);
+  //     print('Response: $responseData');
+  //     Map<String, dynamic> userData = responseData['user'];
+
+  //     String token = responseData['Token'];
+  //     String code = userData['unique_code'];
+  //     int userId = userData['id'];
+  //     print('First Name: ${userData['fname']}');
+  //     print('Last Name: ${userData['lname']}');
+  //     print('User token: $token');
+
+  //     // Assuming your API response has a key 'isAdmin' indicating admin status
+  //     bool isAdmin = responseData['is_admin'] ?? false;
+
+  //     if (isAdmin) {
+  //       // Get admin
+  //       _isAuthenticated = true;
+  //       String fullName = '${userData['fname']} ${userData['lname']}';
+  //       SharedPreferences prefs = await SharedPreferences.getInstance();
+  //       prefs.setString('token', token);
+  //       prefs.setString('fullName', fullName);
+  //       prefs.setInt('userId', userData['id']);
+  //       prefs.setBool('_isAuthenticated', true);
+  //       // Execute tasks
+  //       await syncUserDataWithApi();
+  //       await getUserFromPrefs();
+  //     } else {
+  //       print('You are not an admin');
+  //     }
+  //     notifyListeners();
+  //   } else {
+  //     // Handle errors or display appropriate messages
+  //     print('Failed to log in. Status code: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+  //   }
+  // }
 
   Future<void> checkLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
