@@ -5,6 +5,7 @@ import 'package:admin/models/data/user_statistics.dart';
 import 'package:admin/screens/main/auth/Tasks/network_functions.dart';
 import 'package:admin/screens/main/constants/contants.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +22,35 @@ class AuthProvider with ChangeNotifier {
   //   }
   // }
 
-  Future<void> login(String phoneNumber, String pinCode) async {
+  // Future<void> login(String phoneNumber, String pinCode) async {
+  //   if (phoneNumber == '+256704959275' && pinCode == 'admin123') {
+  //     // Hardcoded values for phone number and pin code to check
+  //     _isAuthenticated = true;
+
+  //     // Update SharedPreferences for logged-in status
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     String fullName = 'Your Full Name'; // Replace with the actual full name
+  //     String token = 'Your Token'; // Replace with the actual token
+  //     int userId = 1; // Replace with the actual user ID
+
+  //     prefs.setString('token', token);
+  //     prefs.setString('fullName', fullName);
+  //     prefs.setInt('userId', userId);
+  //     prefs.setBool('_isAuthenticated', true);
+
+  //     // Execute tasks if needed
+  //     await syncUserDataWithApi();
+  //     await getUserFromPrefs();
+
+  //     notifyListeners();
+  //   } else {
+  //     print('Invalid credentials provided');
+  //     // Handle invalid login attempt here
+  //   }
+  // }
+
+  Future<void> login(
+      String phoneNumber, String pinCode, BuildContext context) async {
     print('Here');
     var connectivityResult = await (Connectivity().checkConnectivity());
 
@@ -31,7 +60,7 @@ class AuthProvider with ChangeNotifier {
     // }
 
     // Perform the login process if internet is available
-    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code/');
+    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/api/login/');
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({'phone': phoneNumber, 'unique_code': pinCode});
     final Map<String, String> data = {
@@ -46,7 +75,7 @@ class AuthProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       // Parse the response data
       final Map<String, dynamic> responseData = json.decode(response.body);
-      print('Response: $responseData');
+      // print('Response: $responseData');
       Map<String, dynamic> userData = responseData['user'];
 
       String token = responseData['Token'];
@@ -76,7 +105,13 @@ class AuthProvider with ChangeNotifier {
       }
       notifyListeners();
     } else {
-      // Handle errors or display appropriate messages
+      // Failed login
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed. Check phone number and unique code.'),
+          backgroundColor: Colors.red, // Customize snackbar color if needed
+        ),
+      );
       print('Failed to log in. Status code: ${response.statusCode}');
       print('Response body: ${response.body}');
     }

@@ -13,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _showUniqueCode = false; // Track if unique code is visible or not
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +97,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             Container(
                               padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                               child: TextFormField(
-                                obscureText: true,
+                                obscureText:
+                                    !_showUniqueCode, // Toggle obscureText based on visibility
                                 controller: _passwordController,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'Unique Code',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _showUniqueCode
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _showUniqueCode =
+                                            !_showUniqueCode; // Toggle visibility
+                                      });
+                                    },
+                                  ),
                                 ),
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -119,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     String password = _passwordController.text;
                                     Provider.of<AuthProvider>(context,
                                             listen: false)
-                                        .login(username, password);
+                                        .login(username, password, context);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

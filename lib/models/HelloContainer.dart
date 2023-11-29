@@ -1,16 +1,17 @@
-import 'package:admin/constants.dart';
 import 'package:flutter/material.dart';
 
 class HelloContainer extends StatefulWidget {
   final String title;
   final String? text;
   final IconData? icon;
+  final bool isDesktop; // Add isDesktop parameter
 
   HelloContainer({
     required this.title,
     this.text,
     Key? key,
     this.icon,
+    required this.isDesktop, // Define isDesktop in the constructor
   }) : super(key: key);
 
   @override
@@ -49,8 +50,8 @@ class _HelloContainerState extends State<HelloContainer> {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        height: 70,
-        width: 180,
+        height: widget.isDesktop ? 70 : 50, // Adjust height based on isDesktop
+        width: widget.isDesktop ? 180 : 120, // Adjust width based on isDesktop
         padding: EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: isHovering
@@ -62,12 +63,12 @@ class _HelloContainerState extends State<HelloContainer> {
           children: [
             Icon(
               widget.icon,
-              size: 35,
-              color: iconColor, // Set the icon color based on the title
+              size: widget.isDesktop
+                  ? 35
+                  : 20, // Adjust icon size based on isDesktop
+              color: iconColor,
             ),
-            SizedBox(
-              width: 3,
-            ),
+            SizedBox(width: 3),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -75,15 +76,23 @@ class _HelloContainerState extends State<HelloContainer> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 14),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: widget.isDesktop
+                        ? 14
+                        : 10, // Adjust font size based on isDesktop
+                  ),
                 ),
-                Text(widget.text!,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                        fontSize: 12)),
+                Text(
+                  widget.text!,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontSize: widget.isDesktop
+                        ? 12
+                        : 8, // Adjust font size based on isDesktop
+                  ),
+                ),
               ],
             )
           ],

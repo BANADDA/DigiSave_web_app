@@ -29,10 +29,10 @@ Future<Map<String, dynamic>?> getUserFromPrefs() async {
 Future<void> getUsers(String retrieveEndpoint, String token) async {
   final serverDataResponse = await http.get(
     Uri.parse(retrieveEndpoint),
-    // headers: {
-    //   'Authorization': 'Token $token',
-    //   'Content-Type': 'application/json',
-    // },
+    headers: {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+    },
   );
   // print('Response data: ${serverDataResponse.body}');
   if (serverDataResponse.statusCode == 200) {
@@ -42,6 +42,7 @@ Future<void> getUsers(String retrieveEndpoint, String token) async {
     // Extract the 'users' part from the response data
     final List<dynamic>? users = responseData['users'];
     // print('Users: $users');
+    print('All users $users');
 
     if (users != null && users.isNotEmpty) {
       // Save user data to SharedPreferences

@@ -9,7 +9,7 @@ import 'components/recent_files.dart';
 import 'components/storage_details.dart';
 
 class DashboardScreen extends StatefulWidget {
-  final Map<String, int> userStatistics;
+  final Map<String, dynamic> userStatistics;
 
   const DashboardScreen({Key? key, required this.userStatistics})
       : super(key: key);
@@ -19,7 +19,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  late Map<String, int> _userStatistics;
+  late Map<String, dynamic> _userStatistics;
 
   @override
   void initState() {

@@ -1,5 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
+
+// Function to calculate age from the date of birth
+int calculateAge(DateTime birthDate) {
+  final now = DateTime.now();
+  final difference = now.difference(birthDate).inDays;
+  return (difference ~/ 365.25).toInt();
+}
 
 Future<Map<String, int>> getUserStatistics() async {
   final prefs = await SharedPreferences.getInstance();
@@ -31,6 +39,21 @@ Future<Map<String, int>> getUserStatistics() async {
           } else {
             statistics['otherGenderUsers'] =
                 (statistics['otherGenderUsers'] ?? 0) + 1;
+          }
+        }
+
+        final String? dobString = user['date_of_birth'] as String?;
+
+        if (dobString != null) {
+          final DateFormat formatter = DateFormat('yyyy-MM-dd');
+          final DateTime dob = formatter.parse(dobString);
+
+          final int age = calculateAge(dob);
+
+          if (age >= 18 && age <= 35) {
+            // Assuming youths are between 18 and 35 years old
+            statistics['numberOfYouths'] =
+                (statistics['numberOfYouths'] ?? 0) + 1;
           }
         }
 

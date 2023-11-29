@@ -13,7 +13,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Map<String, int> _userStatistics = {};
+  Map<String, dynamic> _userStatistics = {};
 
   @override
   void initState() {
@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> fetchUserStatistics() async {
-    Map<String, int>? statistics = await getUserStatistics();
+    Map<String, dynamic> statistics = await getUserStatistics();
     if (statistics != null) {
       setState(() {
         _userStatistics = statistics;
