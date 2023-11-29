@@ -47520,10 +47520,10 @@ while(true)switch(s){case 0:A.c8("Here")
 if($.a32==null)$.a32=new A.Je()
 s=2
 return A.R($.awX().j8(),$async$mi)
-case 2:p=A.i2("https://digisave.m-omulimisa.com/api/login/",0,null)
+case 2:p=A.i2("https://digisave.m-omulimisa.com/api/login",0,null)
 o=t.N
 A.aI(["Content-Type","application/json"],o,o)
-n=B.aG.iu(A.aI(["phone",a,"unique_code",b],o,o))
+n=B.aG.iu(A.aI(["phone_number",a,"password",b],o,o))
 m=A.aI(["phone",a,"unique_code",b],o,o)
 A.c8("JSON: :"+n)
 A.c8("Here")
