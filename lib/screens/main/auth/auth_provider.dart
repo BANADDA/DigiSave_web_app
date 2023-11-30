@@ -44,6 +44,17 @@ class AuthProvider with ChangeNotifier {
   //     await getUserFromPrefs();
 
   //     notifyListeners();
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Center(
+  //             child: Text(
+  //           'User Logged in successfully.',
+  //           style: TextStyle(
+  //               fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+  //         )),
+  //         backgroundColor: Colors.green, // Customize snackbar color if needed
+  //       ),
+  //     );
   //   } else {
   //     print('Invalid credentials provided');
   //     // Handle invalid login attempt here
@@ -81,37 +92,49 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      // Parse the response data
+      print('Response: ${json.decode(response.body)}');
       final Map<String, dynamic> responseData = json.decode(response.body);
-      // print('Response: $responseData');
-      Map<String, dynamic> userData = responseData['user'];
+      print('Map response $responseData');
 
-      String token = responseData['Token'];
-      String code = userData['unique_code'];
-      int userId = userData['id'];
-      print('First Name: ${userData['fname']}');
-      print('Last Name: ${userData['lname']}');
-      print('User token: $token');
+      if (responseData['success'] == true) {
+        final Map<String, dynamic> userData = responseData['data'];
+        String token = responseData['token'];
+        print('User Name: ${userData['name']}');
+        print('Phone Number: ${userData['phone_number']}');
+        print('User token: $token');
 
-      // Assuming your API response has a key 'isAdmin' indicating admin status
-      bool isAdmin = responseData['is_admin'] ?? false;
+        // Assuming your API response has a key 'role' indicating admin status
+        bool isAdmin = userData['role'] == 'Super Admin';
 
-      if (isAdmin) {
-        // Get admin
-        _isAuthenticated = true;
-        String fullName = '${userData['fname']} ${userData['lname']}';
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', token);
-        prefs.setString('fullName', fullName);
-        prefs.setInt('userId', userData['id']);
-        prefs.setBool('_isAuthenticated', true);
-        // Execute tasks
-        await syncUserDataWithApi();
-        await getUserFromPrefs();
-      } else {
-        print('You are not an admin');
+        if (isAdmin) {
+          _isAuthenticated = true;
+          String fullName = userData['name'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('token', token);
+          prefs.setString('fullName', fullName);
+          prefs.setInt('userId', 1); // You might need to adjust the user ID
+          prefs.setBool('_isAuthenticated', true);
+          // Execute tasks
+          await syncUserDataWithApi();
+          await getUserFromPrefs();
+        } else {
+          print('You are not an admin');
+        }
+        notifyListeners();
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Center(
+            child: Text(
+              'Welcome ${userData['name']},',
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+          ),
+          backgroundColor: Colors.green, // Customize snackbar color if needed
+        ));
       }
-      notifyListeners();
     } else {
       // Failed login
       ScaffoldMessenger.of(context).showSnackBar(
