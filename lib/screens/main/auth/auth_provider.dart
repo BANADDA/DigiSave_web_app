@@ -22,7 +22,8 @@ class AuthProvider with ChangeNotifier {
   //   }
   // }
 
-  // Future<void> login(String phoneNumber, String pinCode) async {
+  // Future<void> login(
+  //     String phoneNumber, String pinCode, BuildContext context) async {
   //   if (phoneNumber == '+256704959275' && pinCode == 'admin123') {
   //     // Hardcoded values for phone number and pin code to check
   //     _isAuthenticated = true;
@@ -60,17 +61,24 @@ class AuthProvider with ChangeNotifier {
     // }
 
     // Perform the login process if internet is available
-    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/api/login/');
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({'phone': phoneNumber, 'unique_code': pinCode});
-    final Map<String, String> data = {
-      'phone': phoneNumber,
-      'unique_code': pinCode,
+    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/api/login');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
     };
-    print('JSON: :$body');
-    print('Here');
 
-    final response = await http.post(apiUrl, body: data);
+    final Map<String, dynamic> data = {
+      'phone_number': phoneNumber,
+      'password': pinCode,
+    };
+
+    final String encodedData = json.encode(data);
+
+    final response = await http.post(
+      apiUrl,
+      body: encodedData,
+      headers: headers,
+    );
 
     if (response.statusCode == 200) {
       // Parse the response data
