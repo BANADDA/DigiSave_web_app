@@ -1,6 +1,6 @@
 class ApiConstants {
-  // static const String baseUrl = 'http://127.0.0.1:7000';
-  static const String baseUrl = 'https://digisave.m-omulimisa.com';
+  static const String baseUrl = 'http://127.0.0.1:7000';
+  // static const String baseUrl = 'https://digisave.m-omulimisa.com';
 }
 
 class AppConstants {

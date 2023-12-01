@@ -72,7 +72,7 @@ class AuthProvider with ChangeNotifier {
     // }
 
     // Perform the login process if internet is available
-    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code');
+    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code/');
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -83,12 +83,12 @@ class AuthProvider with ChangeNotifier {
       'unique_code': pinCode,
     };
 
-    final String encodedData = json.encode(data);
+    // final String encodedData = json.encode(data);
 
     final response = await http.post(
       apiUrl,
-      body: encodedData,
-      headers: headers,
+      body: data,
+      // headers: headers,
     );
 
     if (response.statusCode == 200) {
