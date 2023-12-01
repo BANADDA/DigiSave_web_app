@@ -72,15 +72,15 @@ class AuthProvider with ChangeNotifier {
     // }
 
     // Perform the login process if internet is available
-    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/api/login');
+    final apiUrl = Uri.parse('${ApiConstants.baseUrl}/login-with-phone-code');
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
 
     final Map<String, dynamic> data = {
-      'phone_number': phoneNumber,
-      'password': pinCode,
+      'phone': phoneNumber,
+      'unique_code': pinCode,
     };
 
     final String encodedData = json.encode(data);
@@ -93,48 +93,45 @@ class AuthProvider with ChangeNotifier {
 
     if (response.statusCode == 200) {
       print('Response: ${json.decode(response.body)}');
+      // Parse the response data
       final Map<String, dynamic> responseData = json.decode(response.body);
-      print('Map response $responseData');
+      // print('Response: $responseData');
+      Map<String, dynamic> userData = responseData['user'];
 
-      if (responseData['success'] == true) {
-        final Map<String, dynamic> userData = responseData['data'];
-        String token = responseData['token'];
-        print('User Name: ${userData['name']}');
-        print('Phone Number: ${userData['phone_number']}');
-        print('User token: $token');
+      String token = responseData['Token'];
+      String code = userData['unique_code'];
+      int userId = userData['id'];
+      print('First Name: ${userData['fname']}');
+      print('Last Name: ${userData['lname']}');
+      print('User token: $token');
 
-        // Assuming your API response has a key 'role' indicating admin status
-        bool isAdmin = userData['role'] == 'Super Admin';
+      // Assuming your API response has a key 'isAdmin' indicating admin status
+      bool isAdmin = responseData['is_admin'] ?? false;
 
-        if (isAdmin) {
-          _isAuthenticated = true;
-          String fullName = userData['name'];
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('token', token);
-          prefs.setString('fullName', fullName);
-          prefs.setInt('userId', 1); // You might need to adjust the user ID
-          prefs.setBool('_isAuthenticated', true);
-          // Execute tasks
-          await syncUserDataWithApi();
-          await getUserFromPrefs();
-        } else {
-          print('You are not an admin');
-        }
-        notifyListeners();
-
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Center(
-            child: Text(
-              'Welcome ${userData['name']},',
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-          ),
-          backgroundColor: Colors.green, // Customize snackbar color if needed
-        ));
+      if (isAdmin) {
+        // Get admin
+        _isAuthenticated = true;
+        String fullName = '${userData['fname']} ${userData['lname']}';
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', token);
+        prefs.setString('fullName', fullName);
+        prefs.setInt('userId', userData['id']);
+        prefs.setBool('_isAuthenticated', true);
+        // Execute tasks
+        await syncUserDataWithApi();
+        await getUserFromPrefs();
+      } else {
+        print('You are not an admin');
       }
+      notifyListeners();
+      // Success
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Welcome ${userData['fname']} ${userData['lname']}.'),
+          backgroundColor: Colors.green, // Customize snackbar color if needed
+        ),
+      );
     } else {
       // Failed login
       ScaffoldMessenger.of(context).showSnackBar(
